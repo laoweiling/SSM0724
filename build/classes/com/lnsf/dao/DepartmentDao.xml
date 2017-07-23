@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.lnsf.dao.DepartmentDao"> 
+	<cache size="512"
+			flushInterval="6000"
+			eviction="FIFO"
+			readOnly="true"
+	></cache>
+	<!-- 查询 -->
+	<select id="getDepartmentById" resultType="Department" parameterType="int">
+		select * from dept where deptNo=#{deptNo}
+	</select>
+	<select id="getAllDepartments" resultType="Department">
+		select * from dept
+	</select>
+</mapper>

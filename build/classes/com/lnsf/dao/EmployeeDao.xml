@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.lnsf.dao.EmployeeDao"> 
+	<cache size="512"
+			flushInterval="6000"
+			eviction="FIFO"
+			readOnly="true"
+	></cache>
+	<!-- 增 -->
+	<insert id="addEmployee" parameterType="Employee" keyColumn="empNo"  keyProperty="empNo">
+		insert into emp(empNo, ename, job, hiredate, sal, comm) values(#{empNo}, #{ename}, #{job}, #{hireDate}, #{sal}, #{comm})
+	</insert>
+	<!-- 删除 -->
+	<delete id="delEmployeeById">
+		delete from emp where empNo=#{empNo}
+	</delete>
+	<!-- 更改 -->
+	<update id="updateEmployee" parameterType="Employee">
+		update emp set ename=#{ename}, job=#{job}, hiredate=#{hireDate}, sal=#{sal}, comm=#{comm} 
+		where empNo=#{empNo}
+	</update>
+	<!-- 查询 -->
+	<select id="getEmployeeById" resultType="Employee" parameterType="int">
+		select * from emp where empNo=#{empNo}
+	</select>
+	<select id="getAllEmployees" resultMap="getAllEmployeeMap" >
+		select * from emp
+	</select>
+	<select id="getMaxEmpNo" resultType="int">
+		select max(empNo) from emp
+	</select>
+	<resultMap type="Employee" id="getAllEmployeeMap">
+		<id column="empNo" property="empNo"/>
+		<result column="ename" property="ename"/>
+		<result column="job" property="job"/>
+		<result column="hireDate" property="hireDate"/>
+		<result column="sal" property="sal"/>
+		<result column="comm" property="comm"/>
+		<association property="mgr" column="mgr" javaType="Employee" select="getEmployeeById"></association>
+		<association property="dept" column="deptNo" javaType="Department" select="com.lnsf.dao.DepartmentDao.getDepartmentById"></association>
+	</resultMap>
+</mapper>

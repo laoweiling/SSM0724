@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.lnsf.dao.OrgDao"> 
+	<cache size="512"
+			flushInterval="6000"
+			eviction="FIFO"
+			readOnly="true"
+	></cache>
+	<!-- 查询 -->
+	<select id="getOrgById" resultMap="orgMap" parameterType="String">
+		select t1.orgNo orgNo, t1.orgName orgName, t2.orgNo corgNo, t2.orgName corgName from org_t t1, org_t t2 where t1.orgNo=t2.orgParent and t1.orgNo=#{orgNo}
+	</select>
+	<resultMap type="Org" id="orgMap">
+		<id column="orgNo" property="orgNo"/>
+		<result column="orgName" property="orgName"/>
+		<collection property="children" ofType="Org" column="orgNo">
+			<id column="corgNo" property="orgNo"/>
+			<result column="corgName" property="orgName"/>
+		</collection>
+	</resultMap>
+	<select id="getOrgByNo" resultType="Org" parameterType="String">
+		select * from org_t where orgNo=#{orgNo}
+	</select>
+	<!-- 分语句查询 -->
+	<select id="getOrgById1" resultMap="orgMap1" parameterType="String">
+		select * from org_t where orgNo=#{orgNo}
+	</select>
+	<select id="getOrgByParent" resultMap="orgMap1" parameterType="String">
+		select * from org_t where orgParent=#{orgNo}
+	</select>
+	<resultMap type="Org" id="orgMap1">
+		<id column="orgNo" property="orgNo"/>
+		<result column="orgName" property="orgName"/>
+		<collection property="children" ofType="Org" column="orgNo" select="getOrgByParent"/>
+	</resultMap>
+</mapper>
